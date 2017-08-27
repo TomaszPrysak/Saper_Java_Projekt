@@ -2,6 +2,10 @@ package app;
 
 import java.util.Random;
 
+import javafx.collections.ObservableList;
+import javafx.scene.Node;
+import javafx.scene.layout.GridPane;
+
 public class TestClass_Random_Location_Mine {
 	
 	public static boolean check(int check_x, int check_y){
@@ -16,6 +20,21 @@ public class TestClass_Random_Location_Mine {
 			}
     	}
 		return check;
+	}
+	
+	public static Node getNodeByRowColumnIndex (final int row, final int column, GridPane gridPane){
+		
+		Node result = null;
+		ObservableList<Node> childrens = gridPane.getChildren();
+	
+		for (Node node : childrens) {
+			if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+				result = node;
+		        break;
+		    }
+		}
+		
+	    return result; 
 	}
 
 	static int [][] tab_location_mine = new int[10][2];
