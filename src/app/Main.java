@@ -6,8 +6,8 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
-
 public class Main extends Application {
+	
 	@Override
 	public void start(Stage stageGame) throws Exception {
 		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/GameView.fxml"));

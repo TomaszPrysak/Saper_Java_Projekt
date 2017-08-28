@@ -53,8 +53,8 @@ public class TestClass_Random_Location_Mine {
     	
     	for(int i = 0; i <= tab_location_mine.length - 1 ; i++){
     		do{
-	    		x = gen.nextInt(tab_location_mine.length);
-	    		y = gen.nextInt(tab_location_mine.length);
+	    		x = gen.nextInt(10);
+	    		y = gen.nextInt(10);
 	    		System.out.println("Wylosowano: " + x + " " + y);
 	    		if(x == 0 && y ==0){
 	    			zero_zero++;
