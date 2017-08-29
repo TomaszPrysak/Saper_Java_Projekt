@@ -9,18 +9,17 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-
-<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.GameOverController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.SuccessController">
    <children>
-      <ImageView fx:id="imag_game_over" fitHeight="281.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="imag_success" fitHeight="281.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@../../../dodatki/pic_dead_end.jpg" />
+            <Image url="@../../../dodatki/pic_success.jpg" />
          </image>
          <VBox.margin>
             <Insets left="25.0" top="25.0" />
          </VBox.margin>
       </ImageView>
-      <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="300.0" text="Game Over !">
+      <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="300.0" text="Udało się !">
          <font>
             <Font size="30.0" />
          </font>

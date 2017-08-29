@@ -11,10 +11,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
-public class GameOverController {
+public class SuccessController {
 
     @FXML
-    private ImageView imag_game_over;
+    private ImageView imag_success;
 
     @FXML
     private Button btn_new_game;
@@ -29,12 +29,13 @@ public class GameOverController {
 
     @FXML
     void newGameAction(MouseEvent event) throws IOException {
-    		Stage stageGame = (Stage) btn_new_game.getScene().getWindow();
-    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/GameView.fxml"));
-    		Scene sceneGame = new Scene(parent);
-    		stageGame.setScene(sceneGame);
-    		stageGame.setTitle("GAME OVER!");
-    		stageGame.setResizable(false);
-    		stageGame.show();
+    	Stage stageGame = (Stage) btn_new_game.getScene().getWindow();
+		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/GameView.fxml"));
+		Scene sceneGame = new Scene(parent);
+		stageGame.setScene(sceneGame);
+		stageGame.setTitle("WYGRANA!");
+		stageGame.setResizable(false);
+		stageGame.show();
     }
+
 }

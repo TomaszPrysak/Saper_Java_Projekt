@@ -1,5 +1,6 @@
 package app.controller;
 
+import java.awt.AWTException;
 import java.io.IOException;
 import java.util.Random;
 
@@ -39,17 +40,24 @@ public class GameController {
 
     @FXML
     private Label lb_qty_mine;
+    
+    @FXML
+    private Label lb_mine_suspected;
 
     @FXML
     private GridPane grid_game_panel;
     
     //zmiene
     
-    public static int qty_mine_overall;
+    public static int qty_mine_overall_user_chooice;
     
     public static String user_name;
     
-	public static int [][] tab_location_mine = new int[10][2]; // deklaracja tabli przechowuj¹cej wspó³rzêdne losowe (x,y) min
+    public int num_click_left = 0;
+    
+    public int num_click_right = 0;
+    
+	public static int [][] tab_location_mine = new int[10][2]; // deklaracja tablicy przechowuj¹cej wspó³rzêdne losowe (x,y) min
 	
 	public static int zero_zero = 0; // deklaracja i inicjalizacja zmiennej wykorzystywanej w celu mo¿liwoœci wyklosowania wspó³rzêdnych 0,0 jakiejœ miny
 	
@@ -124,19 +132,21 @@ public class GameController {
 		return qty_mine_neighborhood;
 	}
 	
-	public static void clear_panel(int row, int col){
-			button_game_panel.setDisable(true);	
-	}
+//	public void clear_panel(int row, int col){
+//		if(check_neighborhood(row, col);
+//		}while(check_neighborhood(row, col) == 0);
+//		grid_game_panel.getChildren().get(num_node).setDisable(true);
+//	}		
 	
 	// obs³uga zdarzeñ
 	
     @FXML
-    void showWhatIsUnderneath(MouseEvent event) throws IOException {
+    void showWhatIsUnderneath(MouseEvent event) throws IOException, AWTException {
     	
 //    	MouseButton button_mouse = (MouseButton)event.getButton();
 //    	Button button_game_panel = (Button)event.getSource();
 //      Node source = (Node)event.getSource();
-        
+    	
     	button_mouse = (MouseButton)event.getButton();
     	button_mouse = event.getButton();
     	button_game_panel = (Button) event.getSource();
@@ -155,32 +165,78 @@ public class GameController {
 	        	button_game_panel.setDisable(true);
 //	        	System.out.println("MINA");
 	        	
-	        	Stage stageGameOver = new Stage();
+	        	Stage stageGameOver = (Stage) button_game_panel.getScene().getWindow();
 	    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/GameOverView.fxml"));
 	    		Scene sceneGameOver = new Scene(parent);
 	    		stageGameOver.setScene(sceneGameOver);
 	    		stageGameOver.setTitle("Game Over !");
 	    		stageGameOver.setResizable(false);
 	    		stageGameOver.show();
-
+	    		
 	        }else if(check_neighborhood(row, col) != 0){
+	        	
 	        	button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
 	        	button_game_panel.setDisable(true);
+	        	num_click_left++;
+	        	System.out.println(num_click_left);
+	        	
+	        	if((num_click_left + qty_mine_overall_user_chooice) == 100){
+		        	Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
+		    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/SuccessView.fxml"));
+		    		Scene sceneResult = new Scene(parent);
+		    		stageResult.setScene(sceneResult);
+		    		stageResult.setTitle("Brawo!");
+		    		stageResult.setResizable(false);
+		    		stageResult.show();
+	        	}
+	        	
 	        }else if(check_neighborhood(row, col) == 0){
-	        	clear_panel(row, col);
+	        	
+	        	button_game_panel.setDisable(true);
+	        	num_click_left++;
+	        	
+	        	System.out.println(num_click_left);
+	        	
+//	        	if(check_neighborhood(row - 1, col - 1) == 0){
+//	        		int grid_node_location = ((row - 1) * 10) + (col - 1);
+//	        		grid_game_panel.getChildren().get(grid_node_location).setDisable(true);
+//	        		num_click_left++;
+//	        	}
+	        	
+	        	if((num_click_left + qty_mine_overall_user_chooice) == 100){
+		        	Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
+		    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/SuccessView.fxml"));
+		    		Scene sceneResult = new Scene(parent);
+		    		stageResult.setScene(sceneResult);
+		    		stageResult.setTitle("Brawo!");
+		    		stageResult.setResizable(false);
+		    		stageResult.show();
+	        	}
 	        }
         }else if(button_mouse == MouseButton.SECONDARY){ // naciœniêcie prawego przycisku myszy	
-        	if(event.getClickCount() == 1){ // pojedyñcze klikniêcie
+        	
+        	if(event.getClickCount() == 1 && button_game_panel.getText().equals("")){ // pojedyñcze klikniêcie
         		button_game_panel.setText("X");
-        	}else if(event.getClickCount() == 2){ // potrójne klikniêcie
-        		button_game_panel.setText("");
+        		num_click_right++;
+        		lb_mine_suspected.setText(String.valueOf(num_click_right));
+        		System.out.println(num_click_right);	
+        		
+        	}else if(event.getClickCount() == 1 && button_game_panel.getText().equals("X")){ // podwójne klikniêcie   	
+        		
+        		if(button_game_panel.getText().equals("X")){
+        			button_game_panel.setText("");
+        			num_click_right--;
+        			lb_mine_suspected.setText(String.valueOf(num_click_right));
+        			System.out.println(num_click_right);
+        		}
         	}
+        	
         }
     }
 
     @FXML
-    void startGame(MouseEvent event) {
-    	
+    void startGame(MouseEvent event) {	  
+    		  
     	if(tf_name.getText().equals("")){
     		Alert a = new Alert(AlertType.WARNING);
     		a.setContentText("Je¿eli nie masz imienia/nicku podpisz siê XX");
@@ -190,19 +246,19 @@ public class GameController {
     	}else{
         	grid_info_panel.setDisable(false);
         	grid_game_panel.setDisable(false);
-    		
-        	user_name = tf_name.getText();
         	
-        	System.out.println(user_name);
+        	user_name = tf_name.getText();
         	
         	Random gen = new Random();
     		
         	int row_random_coordinate; 
         	int col_random_coordinate;
         	
-	    	qty_mine_overall = sp_qty_mine.getValue();
+        	qty_mine_overall_user_chooice = sp_qty_mine.getValue();
 	    	
-	    	tab_location_mine = new int [qty_mine_overall][2];
+	    	lb_qty_mine.setText(String.valueOf(qty_mine_overall_user_chooice));
+	    	
+	    	tab_location_mine = new int [qty_mine_overall_user_chooice][2];
 	    	
 	    	for(int i = 0; i <= tab_location_mine.length - 1 ; i++){ // pêtla do losowania koordynatów po³o¿enia kolejnych min
 	    		do{
@@ -230,11 +286,11 @@ public class GameController {
     
     public void initialize(){
     	
+    	
     	SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 10);
     	
     	sp_qty_mine.setValueFactory(valueFactory);
     
     }
-    
 }
 
