@@ -3,15 +3,21 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.SuccessController">
    <children>
-      <ImageView fx:id="imag_success" fitHeight="281.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="imag_success" fitHeight="251.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../dodatki/pic_success.jpg" />
          </image>
@@ -19,11 +25,114 @@
             <Insets left="25.0" top="25.0" />
          </VBox.margin>
       </ImageView>
-      <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="300.0" text="Udało się !">
+      <Label alignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="50.0" prefWidth="300.0" text="Brawo !">
          <font>
             <Font size="30.0" />
          </font>
       </Label>
+      <Separator maxWidth="1.7976931348623157E308" prefHeight="10.0" />
+      <GridPane>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Saperze:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="lb_name" maxWidth="1.7976931348623157E308" text="User_name" textFill="#0044ff" GridPane.columnIndex="1">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="5.0" />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+      <GridPane layoutX="10.0" layoutY="354.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Rozbroiłeś pole w czasie">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="lb_time" maxWidth="1.7976931348623157E308" text="User_time" textFill="#0044ff" GridPane.columnIndex="1">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="5.0" />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+      <GridPane layoutX="10.0" layoutY="324.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Pozycja w rakingu:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="lb_rank" maxWidth="1.7976931348623157E308" text="User_rank" textFill="#0044ff" GridPane.columnIndex="1">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="5.0" />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+      <Separator maxWidth="1.7976931348623157E308" prefHeight="10.0" />
+      <Label maxHeight="1.7976931348623157E308" prefHeight="17.0" prefWidth="450.0" text="Ranking:">
+         <VBox.margin>
+            <Insets bottom="5.0" />
+         </VBox.margin>
+         <font>
+            <Font size="15.0" />
+         </font>
+         <padding>
+            <Insets left="10.0" />
+         </padding>
+      </Label>
+      <TableView prefHeight="200.0" prefWidth="200.0">
+        <columns>
+          <TableColumn prefWidth="75.0" text="C1" />
+          <TableColumn prefWidth="75.0" text="C2" />
+        </columns>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </TableView>
       <HBox prefHeight="50.0" prefWidth="400.0">
          <children>
             <Button fx:id="btn_new_game" mnemonicParsing="false" onMouseClicked="#newGameAction" prefHeight="30.0" prefWidth="150.0" text="Nowa gra">

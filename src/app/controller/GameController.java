@@ -2,8 +2,14 @@ package app.controller;
 
 import java.awt.AWTException;
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.time.LocalTime;
 import java.util.Random;
-
+import app.database.DBConnector;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -19,6 +25,7 @@ import javafx.scene.control.Alert.AlertType;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class GameController {
@@ -31,49 +38,65 @@ public class GameController {
 	
     @FXML
     private Button btn_new_game;
-
+    
+    @FXML
+    private GridPane grid_game_panel;
+    
     @FXML
     private GridPane grid_info_panel;
-
+    
     @FXML
-    private Label lb_time;
+    private HBox hb_name;
+    
+    @FXML
+    private HBox hb_qty_mine;
+    
+    @FXML
+    private Label lb_stopwatch;
 
     @FXML
     private Label lb_qty_mine;
     
     @FXML
     private Label lb_mine_suspected;
-
-    @FXML
-    private GridPane grid_game_panel;
     
-    //zmiene
+    ////////////
+    // zmiene //
+    ////////////
     
-    public static int qty_mine_overall_user_chooice;
+    DBConnector db;
     
-    public static String user_name;
+    static int qty_mine_overall_user_chooice;
     
-    public int num_click_left = 0;
+    static String user_name;
     
-    public int num_click_right = 0;
+    int num_click_left = 0;
     
-	public static int [][] tab_location_mine = new int[10][2]; // deklaracja tablicy przechowuj¹cej wspó³rzêdne losowe (x,y) min
+    int num_click_right = 0;
+    
+	static int [][] tab_location_mine = new int[10][2]; // deklaracja tablicy przechowuj¹cej wspó³rzêdne losowe (x,y) min
 	
-	public static int zero_zero = 0; // deklaracja i inicjalizacja zmiennej wykorzystywanej w celu mo¿liwoœci wyklosowania wspó³rzêdnych 0,0 jakiejœ miny
+	static int zero_zero = 0; // deklaracja i inicjalizacja zmiennej wykorzystywanej w celu mo¿liwoœci wyklosowania wspó³rzêdnych 0,0 jakiejœ miny
 	
-	public static final String mine = "M";
+	static final String mine = "M";
 	
-	public static int qty_mine_neighborhood;
+	static int qty_mine_neighborhood;
 	
-	public static MouseButton button_mouse;
+	static LocalTime timeStart;
 	
-	public static Button button_game_panel;
+	static LocalTime timeStop;
 	
-    public static Node source;
+	static MouseButton button_mouse;
 	
-	// metody
+	static Button button_game_panel;
 	
-	public static boolean check_coordiantes_unique(int row, int col){ // metoda do sprawdzania czy wylosowane tymczaswoe zminne oznaczaj¹ce wspó³órzêdne kolejnej miny znajduj¹ siê ju¿ w tablicy wspó³rzêdnych min
+    static Node source;
+	
+    ////////////
+	// metody //
+    ////////////
+    
+	public static boolean checkCoordiantesUnique(int row, int col){ // metoda do sprawdzania czy wylosowane tymczaswoe zminne oznaczaj¹ce wspó³órzêdne kolejnej miny znajduj¹ siê ju¿ w tablicy wspó³rzêdnych min
 		boolean check = false;
 		for(int i = 0; i <= tab_location_mine.length - 1 ; i++){
     		if(tab_location_mine[i][0] == row && tab_location_mine[i][1] == col && zero_zero != 1){ // UWAGA zmienna zero_zero jest bardzo wazna. Poniewa¿ na pocz¹tku programu deklarujê tablicê [10][2] to na wstêpie sk³ada siê ona z samych zer. Nastêpnie losujê wspó³rzêdne, jezeli wylosujê 0,0 to jest to po³o¿enie sprawdzane czy jest ju¿ w tablicy. Normalnie skoro tablica na pocz¹tku sk³ada siê z samy zer. To w koñu metoda znajdzie same zera i uzna, ¿e jest to duplikat. Dlatego w przypadku smaych zer pierwsze porównanie nie mo¿e byæ uznane za duplikat. I do tego jest potrzebna ta zmienna pomocnicza zero_zero, aby zliczyæ iloœæ porównañ z tablic¹. Tylko wartoœæ = 1 tej zmiennej powoduje, ¿e porównanie nie zwraca duplikatu
@@ -88,7 +111,7 @@ public class GameController {
 		return check;
 	}
 	
-	public static boolean check_mine_underneath_button(int row, int col){ // metoda do sprawdzania czy wspó³rzêdne klawisza pokrywaj¹ siê ze wspó³rzêdnymi miny
+	public static boolean checkMineUnderneathButton(int row, int col){ // metoda do sprawdzania czy wspó³rzêdne klawisza pokrywaj¹ siê ze wspó³rzêdnymi miny
 		boolean check = false;
     	for(int i = 0; i <= tab_location_mine.length - 1; i++){
     		if(tab_location_mine[i][0] == row && tab_location_mine[i][1] == col){
@@ -101,7 +124,7 @@ public class GameController {
 		return check;
 	}
 	
-	public static int check_neighborhood(int row, int col){
+	public static int checkNeighborhood(int row, int col){ // metoda do sprawdzania czy w otoczeniu wciœniêtego klawisza jest mina i inkrementowanie zmiennej je¿eli ona wystêpuje
 		qty_mine_neighborhood = 0;
 		for(int i = 0; i<= tab_location_mine.length - 1; i++){
 			if(tab_location_mine[i][0] == (row - 1) && tab_location_mine[i][1] == (col - 1)){
@@ -132,20 +155,26 @@ public class GameController {
 		return qty_mine_neighborhood;
 	}
 	
-//	public void clear_panel(int row, int col){
-//		if(check_neighborhood(row, col);
-//		}while(check_neighborhood(row, col) == 0);
-//		grid_game_panel.getChildren().get(num_node).setDisable(true);
-//	}		
+	public static Node getNodeByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // 
+	    Node result = null;
+	    
+	    ObservableList<Node> childrens = grid_game_panel.getChildren();
+
+	    for (Node node : childrens) {
+	        if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+	            result = node;
+	            break;
+	        }
+	    }
+	    return result;
+	}
 	
-	// obs³uga zdarzeñ
+	/////////////////////
+	// obs³uga zdarzeñ //
+	/////////////////////		
 	
     @FXML
     void showWhatIsUnderneath(MouseEvent event) throws IOException, AWTException {
-    	
-//    	MouseButton button_mouse = (MouseButton)event.getButton();
-//    	Button button_game_panel = (Button)event.getSource();
-//      Node source = (Node)event.getSource();
     	
     	button_mouse = (MouseButton)event.getButton();
     	button_mouse = event.getButton();
@@ -154,18 +183,19 @@ public class GameController {
     	
         int row = GridPane.getRowIndex(source);
         int col = GridPane.getColumnIndex(source);
-        
-//      System.out.println("Rz¹d: "+ row);
-//      System.out.println("Kolumna: "+ col);
+   
+	    System.out.println("Rz¹d: "+ row);
+	    System.out.println("Kolumna: "+ col);
         
         if(button_mouse == MouseButton.PRIMARY){ // naciœniêcie lewego przycisku myszy
-	        if(check_mine_underneath_button(row, col) == true){
+	        if(checkMineUnderneathButton(row, col) == true){
 	        	
 	        	button_game_panel.setText(mine);
 	        	button_game_panel.setDisable(true);
 //	        	System.out.println("MINA");
 	        	
-	        	Stage stageGameOver = (Stage) button_game_panel.getScene().getWindow();
+//	        	Stage stageGameOver = (Stage) button_game_panel.getScene().getWindow();
+	        	Stage stageGameOver = new Stage();
 	    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/GameOverView.fxml"));
 	    		Scene sceneGameOver = new Scene(parent);
 	    		stageGameOver.setScene(sceneGameOver);
@@ -173,7 +203,7 @@ public class GameController {
 	    		stageGameOver.setResizable(false);
 	    		stageGameOver.show();
 	    		
-	        }else if(check_neighborhood(row, col) != 0){
+	        }else if(checkNeighborhood(row, col) != 0){
 	        	
 	        	button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
 	        	button_game_panel.setDisable(true);
@@ -181,7 +211,11 @@ public class GameController {
 	        	System.out.println(num_click_left);
 	        	
 	        	if((num_click_left + qty_mine_overall_user_chooice) == 100){
-		        	Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
+        
+	        		timeStop= LocalTime.now();
+	        		
+//	        		Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
+		        	Stage stageResult = new Stage();
 		    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/SuccessView.fxml"));
 		    		Scene sceneResult = new Scene(parent);
 		    		stageResult.setScene(sceneResult);
@@ -190,21 +224,36 @@ public class GameController {
 		    		stageResult.show();
 	        	}
 	        	
-	        }else if(check_neighborhood(row, col) == 0){
+	        }else if(checkNeighborhood(row, col) == 0){
 	        	
 	        	button_game_panel.setDisable(true);
 	        	num_click_left++;
 	        	
 	        	System.out.println(num_click_left);
 	        	
-//	        	if(check_neighborhood(row - 1, col - 1) == 0){
-//	        		int grid_node_location = ((row - 1) * 10) + (col - 1);
-//	        		grid_game_panel.getChildren().get(grid_node_location).setDisable(true);
-//	        		num_click_left++;
+	        	// tutaj bêdzie sekcja odpowiedzialna za odkrywanie pól pustych
+	        	// | | |
+	        	// V V V
+	        	
+//	        	try{
+//		        	if(check_neighborhood(row - 1, col - 1) == 0){
+//		        		button_game_panel = (Button) getNodeByRowColumnIndex(row - 1, col - 1, grid_game_panel);
+//		        		button_game_panel.setDisable(true);
+//		        		num_click_left++;
+////		        	}
+//	        	}catch(NullPointerException e){
 //	        	}
 	        	
+		        // A A A
+		        // | | |		
+	        	// tutaj bêdzie sekcja odpowiedzialna za odkrywanie pól pustych
+
 	        	if((num_click_left + qty_mine_overall_user_chooice) == 100){
-		        	Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
+	        		
+	        		timeStop= LocalTime.now();
+	        		
+//		        	Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
+		        	Stage stageResult = new Stage();
 		    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/SuccessView.fxml"));
 		    		Scene sceneResult = new Scene(parent);
 		    		stageResult.setScene(sceneResult);
@@ -213,6 +262,7 @@ public class GameController {
 		    		stageResult.show();
 	        	}
 	        }
+	        
         }else if(button_mouse == MouseButton.SECONDARY){ // naciœniêcie prawego przycisku myszy	
         	
         	if(event.getClickCount() == 1 && button_game_panel.getText().equals("")){ // pojedyñcze klikniêcie
@@ -230,24 +280,36 @@ public class GameController {
         			System.out.println(num_click_right);
         		}
         	}
-        	
         }
     }
 
     @FXML
-    void startGame(MouseEvent event) {	  
-    		  
-    	if(tf_name.getText().equals("")){
+    void startGame(MouseEvent event) throws ClassNotFoundException, SQLException {	  
+    	
+    	user_name = tf_name.getText();
+    	Connection conn = db.Connection();
+    	Statement stat = conn.createStatement();
+    	ResultSet rs = stat.executeQuery("select * from results where user_name = '" + user_name + "';");
+    	
+    	if(user_name.equals("") || rs.next()){
+    		
     		Alert a = new Alert(AlertType.WARNING);
-    		a.setContentText("Je¿eli nie masz imienia/nicku podpisz siê XX");
+    		a.setContentText("Podane imiê/nick ju¿ istnieje lub nie poda³eœ ¿adnego");
     		a.setTitle("B³¹d");
     		a.setHeaderText("UWAGA!");
     		a.showAndWait();
+    		
     	}else{
+    		
+    		timeStart= LocalTime.now();
+
         	grid_info_panel.setDisable(false);
         	grid_game_panel.setDisable(false);
         	
-        	user_name = tf_name.getText();
+        	hb_name.setDisable(true);
+        	hb_qty_mine.setDisable(true);
+        	
+        	btn_new_game.setDisable(true);
         	
         	Random gen = new Random();
     		
@@ -268,12 +330,12 @@ public class GameController {
 		    		if(row_random_coordinate == 0 && col_random_coordinate == 0){ 
 		    			zero_zero++; // je¿eli zostan¹ wlosowane wspó³rzêdne 0,0 to zwiêkszam zmienn¹ pomocnicz¹ o jeden 
 		    		}
-	    		}while(check_coordiantes_unique(row_random_coordinate, col_random_coordinate)); // nastêpnie wylosowane tymczasowe zmienne sprawdzamy czy ju¿ nie by³y kiedys wylosowane i zapisane w tablicy - uruchamiamy metode check - je¿eli jest true to jeszcze raz s¹ losowane zmienne i jeszcze raz sprawdzane w metodzie, je¿eli false, to znaczy, ¿e mo¿emy wpisaæ te wspó³rzêdne do tablicy bo do pory nie by³y wylosowane
+	    		}while(checkCoordiantesUnique(row_random_coordinate, col_random_coordinate)); // nastêpnie wylosowane tymczasowe zmienne sprawdzamy czy ju¿ nie by³y kiedys wylosowane i zapisane w tablicy - uruchamiamy metode check - je¿eli jest true to jeszcze raz s¹ losowane zmienne i jeszcze raz sprawdzane w metodzie, je¿eli false, to znaczy, ¿e mo¿emy wpisaæ te wspó³rzêdne do tablicy bo do pory nie by³y wylosowane
 	    		tab_location_mine[i][0] = row_random_coordinate; // przypisanie zmiennych do miejsc w tabeli po wczeœniejszym sprawdzeniu czy by³y wczêsniej wylosowane
 	    		tab_location_mine[i][1] = col_random_coordinate;
 	    	}
 	    	
-	    	// wypisuej wylosowan¹ lokalizacjê min
+	    	// wypisuej wylosowan¹ lokalizacjê min w koncoli
 	    	for(int i = 0; i <= tab_location_mine.length - 1 ; i++){
 	    		for(int j = 0; j <= tab_location_mine[0].length - 1; j++){
 	    			System.out.print(tab_location_mine[i][j] + " ");
@@ -281,11 +343,15 @@ public class GameController {
 	    		System.out.println();
 	    	}
     	}
-    	
     }
+    
+    ///////////////////////
+    // metoda inicjuj¹ca //
+    ///////////////////////
     
     public void initialize(){
     	
+    	db = new DBConnector();
     	
     	SpinnerValueFactory<Integer> valueFactory = new SpinnerValueFactory.IntegerSpinnerValueFactory(1, 50, 10);
     	
