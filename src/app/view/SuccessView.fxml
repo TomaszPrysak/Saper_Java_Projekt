@@ -31,33 +31,11 @@
          </font>
       </Label>
       <Separator maxWidth="1.7976931348623157E308" prefHeight="10.0" />
-      <GridPane>
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Saperze:">
-               <font>
-                  <Font size="15.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets right="5.0" />
-               </GridPane.margin>
-            </Label>
-            <Label fx:id="lb_name" maxWidth="1.7976931348623157E308" text="User_name" textFill="#0044ff" GridPane.columnIndex="1">
-               <font>
-                  <Font size="20.0" />
-               </font>
-               <GridPane.margin>
-                  <Insets left="5.0" />
-               </GridPane.margin>
-            </Label>
-         </children>
-      </GridPane>
+      <Label fx:id="lb_name" alignment="CENTER" maxWidth="1.7976931348623157E308" text="User_name" textFill="#0044ff">
+         <font>
+            <Font size="20.0" />
+         </font>
+      </Label>
       <GridPane layoutX="10.0" layoutY="354.0">
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -67,7 +45,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Rozbroiłeś pole w czasie">
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Rozbroiłeś pole w czasie:">
                <font>
                   <Font size="15.0" />
                </font>
@@ -121,16 +99,17 @@
             <Font size="15.0" />
          </font>
          <padding>
-            <Insets left="10.0" />
+            <Insets left="25.0" />
          </padding>
       </Label>
-      <TableView prefHeight="200.0" prefWidth="200.0">
+      <TableView fx:id="table_rank" prefHeight="200.0">
         <columns>
-          <TableColumn prefWidth="75.0" text="C1" />
-          <TableColumn prefWidth="75.0" text="C2" />
+          <TableColumn fx:id="col_id" prefWidth="50.0" text="Rank" />
+          <TableColumn fx:id="col_user_name" prefWidth="200.0" text="Player" />
+            <TableColumn fx:id="col_stopwatch" prefWidth="100.0" text="Time (sec)" />
         </columns>
          <VBox.margin>
-            <Insets bottom="10.0" />
+            <Insets bottom="10.0" left="25.0" right="25.0" />
          </VBox.margin>
       </TableView>
       <HBox prefHeight="50.0" prefWidth="400.0">

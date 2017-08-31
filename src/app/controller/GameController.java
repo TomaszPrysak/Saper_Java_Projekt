@@ -64,7 +64,7 @@ public class GameController {
     // zmiene //
     ////////////
     
-    DBConnector db;
+    public DBConnector db;
     
     static int qty_mine_overall_user_chooice;
     
@@ -99,7 +99,7 @@ public class GameController {
 	public static boolean checkCoordiantesUnique(int row, int col){ // metoda do sprawdzania czy wylosowane tymczaswoe zminne oznaczaj¹ce wspó³órzêdne kolejnej miny znajduj¹ siê ju¿ w tablicy wspó³rzêdnych min
 		boolean check = false;
 		for(int i = 0; i <= tab_location_mine.length - 1 ; i++){
-    		if(tab_location_mine[i][0] == row && tab_location_mine[i][1] == col && zero_zero != 1){ // UWAGA zmienna zero_zero jest bardzo wazna. Poniewa¿ na pocz¹tku programu deklarujê tablicê [10][2] to na wstêpie sk³ada siê ona z samych zer. Nastêpnie losujê wspó³rzêdne, jezeli wylosujê 0,0 to jest to po³o¿enie sprawdzane czy jest ju¿ w tablicy. Normalnie skoro tablica na pocz¹tku sk³ada siê z samy zer. To w koñu metoda znajdzie same zera i uzna, ¿e jest to duplikat. Dlatego w przypadku smaych zer pierwsze porównanie nie mo¿e byæ uznane za duplikat. I do tego jest potrzebna ta zmienna pomocnicza zero_zero, aby zliczyæ iloœæ porównañ z tablic¹. Tylko wartoœæ = 1 tej zmiennej powoduje, ¿e porównanie nie zwraca duplikatu
+    		if(tab_location_mine[i][0] == row && tab_location_mine[i][1] == col && zero_zero != 1){ // UWAGA zmienna zero_zero jest bardzo wazna. Poniewa¿ na pocz¹tku programu deklarujê tablicê [10][2] to na wstêpie sk³ada siê ona z samych zer. Nastêpnie losujê wspó³rzêdne, jezeli wylosujê 0,0 to jest to po³o¿enie sprawdzane czy jest ju¿ w tablicy. Normalnie skoro tablica na pocz¹tku sk³ada siê z samy zer. To w koñu metoda znajdzie same zera i uzna, ¿e jest to duplikat. Dlatego w przypadku samych zer pierwsze porównanie nie mo¿e byæ uznane za duplikat. I do tego jest potrzebna ta zmienna pomocnicza zero_zero, aby zliczyæ iloœæ porównañ z tablic¹. Tylko wartoœæ = 1 tej zmiennej powoduje, ¿e porównanie nie zwraca duplikatu
     			check = true;
     			System.out.println("IDENTYCZNE");
     			System.out.print("Wylosowano ponownie: ");
@@ -194,8 +194,8 @@ public class GameController {
 	        	button_game_panel.setDisable(true);
 //	        	System.out.println("MINA");
 	        	
-//	        	Stage stageGameOver = (Stage) button_game_panel.getScene().getWindow();
-	        	Stage stageGameOver = new Stage();
+	        	Stage stageGameOver = (Stage) button_game_panel.getScene().getWindow();
+//	        	Stage stageGameOver = new Stage();
 	    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/GameOverView.fxml"));
 	    		Scene sceneGameOver = new Scene(parent);
 	    		stageGameOver.setScene(sceneGameOver);
@@ -214,8 +214,8 @@ public class GameController {
         
 	        		timeStop= LocalTime.now();
 	        		
-//	        		Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
-		        	Stage stageResult = new Stage();
+	        		Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
+//		        	Stage stageResult = new Stage();
 		    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/SuccessView.fxml"));
 		    		Scene sceneResult = new Scene(parent);
 		    		stageResult.setScene(sceneResult);
@@ -240,7 +240,7 @@ public class GameController {
 //		        		button_game_panel = (Button) getNodeByRowColumnIndex(row - 1, col - 1, grid_game_panel);
 //		        		button_game_panel.setDisable(true);
 //		        		num_click_left++;
-////		        	}
+//		        	}
 //	        	}catch(NullPointerException e){
 //	        	}
 	        	
@@ -252,8 +252,8 @@ public class GameController {
 	        		
 	        		timeStop= LocalTime.now();
 	        		
-//		        	Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
-		        	Stage stageResult = new Stage();
+		        	Stage stageResult = (Stage) button_game_panel.getScene().getWindow();
+//		        	Stage stageResult = new Stage();
 		    		Parent parent = (Parent) FXMLLoader.load(getClass().getResource("/app/view/SuccessView.fxml"));
 		    		Scene sceneResult = new Scene(parent);
 		    		stageResult.setScene(sceneResult);
@@ -291,15 +291,23 @@ public class GameController {
     	Statement stat = conn.createStatement();
     	ResultSet rs = stat.executeQuery("select * from results where user_name = '" + user_name + "';");
     	
-    	if(user_name.equals("") || rs.next()){
-    		
+    	if(user_name.equals("")){
+
     		Alert a = new Alert(AlertType.WARNING);
     		a.setContentText("Podane imiê/nick ju¿ istnieje lub nie poda³eœ ¿adnego");
     		a.setTitle("B³¹d");
     		a.setHeaderText("UWAGA!");
     		a.showAndWait();
     		
-    	}else{
+    	}else if(rs.next()){
+    		
+    		double time_temp = rs.getDouble(3);
+    		Alert a = new Alert(AlertType.INFORMATION);
+    		a.setContentText("Witaj ponownie!\nTwój dotychczasowy czas to: "+ time_temp +"\nDasz radê go poprawiæ ?");
+    		a.setTitle("Witamy");
+    		a.setHeaderText("DZIÊKUJEMY");
+    		a.showAndWait();
+    	}
     		
     		timeStart= LocalTime.now();
 
@@ -342,7 +350,6 @@ public class GameController {
 	    		}
 	    		System.out.println();
 	    	}
-    	}
     }
     
     ///////////////////////
