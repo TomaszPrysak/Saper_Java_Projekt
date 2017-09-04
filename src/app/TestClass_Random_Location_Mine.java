@@ -70,10 +70,5 @@ public class TestClass_Random_Location_Mine {
     		}
     		System.out.println();
     	}
-    	
-    	
-    	
-    	
-    	
     }	
 }

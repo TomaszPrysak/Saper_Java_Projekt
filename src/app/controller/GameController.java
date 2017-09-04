@@ -124,7 +124,7 @@ public class GameController {
 		return check;
 	}
 	
-	public static int checkNeighborhood(int row, int col){ // metoda do sprawdzania czy w otoczeniu wciœniêtego klawisza jest mina i inkrementowanie zmiennej je¿eli ona wystêpuje
+	public static int countMineNeighborhood(int row, int col){ // metoda do sprawdzania czy w otoczeniu wciœniêtego klawisza jest mina i inkrementowanie zmiennej je¿eli ona wystêpuje
 		qty_mine_neighborhood = 0;
 		for(int i = 0; i<= tab_location_mine.length - 1; i++){
 			if(tab_location_mine[i][0] == (row - 1) && tab_location_mine[i][1] == (col - 1)){
@@ -155,7 +155,7 @@ public class GameController {
 		return qty_mine_neighborhood;
 	}
 	
-	public static Node getNodeByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // 
+	public static Node getButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // metoda do zwracania obiektu klasy Node z konkretnego po³o¿enia w grid panelu
 	    Node result = null;
 	    
 	    ObservableList<Node> childrens = grid_game_panel.getChildren();
@@ -184,8 +184,8 @@ public class GameController {
         int row = GridPane.getRowIndex(source);
         int col = GridPane.getColumnIndex(source);
    
-	    System.out.println("Rz¹d: "+ row);
-	    System.out.println("Kolumna: "+ col);
+//	    System.out.println("Rz¹d: "+ row);
+//	    System.out.println("Kolumna: "+ col);
         
         if(button_mouse == MouseButton.PRIMARY){ // naciœniêcie lewego przycisku myszy
 	        if(checkMineUnderneathButton(row, col) == true){
@@ -203,7 +203,7 @@ public class GameController {
 	    		stageGameOver.setResizable(false);
 	    		stageGameOver.show();
 	    		
-	        }else if(checkNeighborhood(row, col) != 0){
+	        }else if(countMineNeighborhood(row, col) != 0){
 	        	
 	        	button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
 	        	button_game_panel.setDisable(true);
@@ -224,29 +224,38 @@ public class GameController {
 		    		stageResult.show();
 	        	}
 	        	
-	        }else if(checkNeighborhood(row, col) == 0){
+	        }else if(countMineNeighborhood(row, col) == 0){
 	        	
 	        	button_game_panel.setDisable(true);
 	        	num_click_left++;
-	        	
 	        	System.out.println(num_click_left);
 	        	
-	        	// tutaj bêdzie sekcja odpowiedzialna za odkrywanie pól pustych
+	        	// tutaj jest sekcja odpowiedzialna za odkrywanie pól pustych
 	        	// | | |
 	        	// V V V
 	        	
-//	        	try{
-//		        	if(check_neighborhood(row - 1, col - 1) == 0){
-//		        		button_game_panel = (Button) getNodeByRowColumnIndex(row - 1, col - 1, grid_game_panel);
-//		        		button_game_panel.setDisable(true);
-//		        		num_click_left++;
-//		        	}
-//	        	}catch(NullPointerException e){
-//	        	}
+	        	for(int i = -1; i <= 1; i++){
+	        		for(int j = -1; j <= 1; j++){
+	        			if(i != 0 || j != 0){
+					        if(countMineNeighborhood(row + i, col + j) == 0){
+					        	try{
+						        	button_game_panel = (Button) getButtonByRowColumnIndex(row + i, col + j, grid_game_panel);
+							        if(!button_game_panel.isDisable()){
+							        	button_game_panel.setDisable(true);
+								        System.out.println("Test");
+								        num_click_left++;
+								        System.out.println(num_click_left);
+							        }
+					        	}catch(Exception e){
+						        }
+					        }
+	        			}
+	        		}
+	        	}
 	        	
 		        // A A A
 		        // | | |		
-	        	// tutaj bêdzie sekcja odpowiedzialna za odkrywanie pól pustych
+	        	// tutaj jest sekcja odpowiedzialna za odkrywanie pól pustych
 
 	        	if((num_click_left + qty_mine_overall_user_chooice) == 100){
 	        		
@@ -273,12 +282,10 @@ public class GameController {
         		
         	}else if(event.getClickCount() == 1 && button_game_panel.getText().equals("X")){ // podwójne klikniêcie   	
         		
-        		if(button_game_panel.getText().equals("X")){
         			button_game_panel.setText("");
         			num_click_right--;
         			lb_mine_suspected.setText(String.valueOf(num_click_right));
         			System.out.println(num_click_right);
-        		}
         	}
         }
     }
@@ -287,30 +294,34 @@ public class GameController {
     void startGame(MouseEvent event) throws ClassNotFoundException, SQLException {	  
     	
     	user_name = tf_name.getText();
+    	
+    	qty_mine_overall_user_chooice = sp_qty_mine.getValue();
+    	
     	Connection conn = db.Connection();
     	Statement stat = conn.createStatement();
-    	ResultSet rs = stat.executeQuery("select * from results where user_name = '" + user_name + "';");
+    	ResultSet rs = stat.executeQuery("select * from results where user_name = '" + user_name + "' and qty_mine = " + qty_mine_overall_user_chooice + ";");
     	
     	if(user_name.equals("")){
-
+    		
     		Alert a = new Alert(AlertType.WARNING);
     		a.setContentText("Podane imiê/nick ju¿ istnieje lub nie poda³eœ ¿adnego");
     		a.setTitle("B³¹d");
     		a.setHeaderText("UWAGA!");
     		a.showAndWait();
     		
-    	}else if(rs.next()){
+    	}else{
     		
-    		double time_temp = rs.getDouble(3);
-    		Alert a = new Alert(AlertType.INFORMATION);
-    		a.setContentText("Witaj ponownie!\nTwój dotychczasowy czas to: "+ time_temp +"\nDasz radê go poprawiæ ?");
-    		a.setTitle("Witamy");
-    		a.setHeaderText("DZIÊKUJEMY");
-    		a.showAndWait();
-    	}
+    		if(rs.next()){
+	    		double time_temp = rs.getDouble(3);
+	    		Alert a = new Alert(AlertType.INFORMATION);
+	    		a.setContentText("Witaj ponownie!\nTwój dotychczasowy czas, w kategorii " + qty_mine_overall_user_chooice + " min, to: "+ time_temp +"\nDasz radê go poprawiæ ?");
+	    		a.setTitle("Witamy");
+	    		a.setHeaderText("DZIÊKUJEMY");
+	    		a.showAndWait();
+    		}
     		
     		timeStart= LocalTime.now();
-
+    		
         	grid_info_panel.setDisable(false);
         	grid_game_panel.setDisable(false);
         	
@@ -323,8 +334,6 @@ public class GameController {
     		
         	int row_random_coordinate; 
         	int col_random_coordinate;
-        	
-        	qty_mine_overall_user_chooice = sp_qty_mine.getValue();
 	    	
 	    	lb_qty_mine.setText(String.valueOf(qty_mine_overall_user_chooice));
 	    	
@@ -350,6 +359,7 @@ public class GameController {
 	    		}
 	    		System.out.println();
 	    	}
+    	}
     }
     
     ///////////////////////

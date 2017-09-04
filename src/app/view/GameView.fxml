@@ -81,7 +81,7 @@
             <Insets top="5.0" />
          </VBox.margin>
          <children>
-            <HBox prefHeight="100.0" prefWidth="200.0">
+            <HBox prefHeight="100.0" prefWidth="200.0" visible="false">
                <children>
                   <Label alignment="CENTER" maxHeight="1.7976931348623157E308" prefWidth="50.0" text="Czas:">
                      <HBox.margin>

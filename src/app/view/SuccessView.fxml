@@ -15,9 +15,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="400.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.SuccessController">
+<VBox maxHeight="1.7976931348623157E308" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefWidth="450.0" xmlns="http://javafx.com/javafx/8.0.111" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.controller.SuccessController">
    <children>
-      <ImageView fx:id="imag_success" fitHeight="251.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="imag_success" fitHeight="273.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../../dodatki/pic_success.jpg" />
          </image>
@@ -45,7 +45,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Rozbroiłeś pole w czasie:">
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="pole rozbrojone w czasie:">
                <font>
                   <Font size="15.0" />
                </font>
@@ -72,7 +72,7 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
          <children>
-            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="Pozycja w rakingu:">
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="aktualna pozycja w rakingu:">
                <font>
                   <Font size="15.0" />
                </font>
@@ -81,6 +81,33 @@
                </GridPane.margin>
             </Label>
             <Label fx:id="lb_rank" maxWidth="1.7976931348623157E308" text="User_rank" textFill="#0044ff" GridPane.columnIndex="1">
+               <font>
+                  <Font size="20.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets left="5.0" />
+               </GridPane.margin>
+            </Label>
+         </children>
+      </GridPane>
+      <GridPane layoutX="10.0" layoutY="428.0">
+         <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+         </columnConstraints>
+         <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+         </rowConstraints>
+         <children>
+            <Label alignment="CENTER_RIGHT" maxWidth="1.7976931348623157E308" text="kategoria - ilość min:">
+               <font>
+                  <Font size="15.0" />
+               </font>
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </Label>
+            <Label fx:id="lb_qty_mine" maxWidth="1.7976931348623157E308" text="Qty_mine" textFill="#0044ff" GridPane.columnIndex="1">
                <font>
                   <Font size="20.0" />
                </font>
@@ -105,8 +132,9 @@
       <TableView fx:id="table_rank" prefHeight="200.0">
         <columns>
           <TableColumn fx:id="col_id" prefWidth="50.0" text="Rank" />
-          <TableColumn fx:id="col_user_name" prefWidth="200.0" text="Player" />
+          <TableColumn fx:id="col_user_name" prefWidth="150.0" text="Player" />
             <TableColumn fx:id="col_stopwatch" prefWidth="100.0" text="Time (sec)" />
+            <TableColumn fx:id="col_qty_mine" prefWidth="100.0" text="Mine (qty)" />
         </columns>
          <VBox.margin>
             <Insets bottom="10.0" left="25.0" right="25.0" />
