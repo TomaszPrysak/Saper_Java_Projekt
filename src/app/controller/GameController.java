@@ -281,7 +281,6 @@ public class GameController {
         		System.out.println(num_click_right);	
         		
         	}else if(event.getClickCount() == 1 && button_game_panel.getText().equals("X")){ // podwójne klikniêcie   	
-        		
         			button_game_panel.setText("");
         			num_click_right--;
         			lb_mine_suspected.setText(String.valueOf(num_click_right));

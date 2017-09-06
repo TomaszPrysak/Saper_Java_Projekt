@@ -28,7 +28,7 @@ select * from results;
 
 select user_name, stopwatch from results group by stopwatch;
 
-delete from results where user_name = 'Tomek';
+delete from results where user_name = 'Pitek';
 
 delete from results;
 
