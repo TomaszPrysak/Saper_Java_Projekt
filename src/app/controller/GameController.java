@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.Random;
 import app.database.DBConnector;
 import javafx.collections.ObservableList;
@@ -169,6 +170,20 @@ public class GameController {
 	    return result;
 	}
 	
+	public static boolean checkButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // 
+	    boolean result = false;
+	    
+	    ObservableList<Node> childrens = grid_game_panel.getChildren();
+
+	    for (Node node : childrens) {
+	        if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
+	            result = true;
+	            break;
+	        }
+	    }
+	    return result;
+	}
+	
 	/////////////////////
 	// obs³uga zdarzeñ //
 	/////////////////////		
@@ -234,24 +249,62 @@ public class GameController {
 	        	// | | |
 	        	// V V V
 	        	
-	        	for(int i = -1; i <= 1; i++){
-	        		for(int j = -1; j <= 1; j++){
+	        	int z = -1;
+	        	
+	        	ArrayList<Integer> rowList = new ArrayList<Integer>();
+	        	ArrayList<Integer> colList = new ArrayList<Integer>();
+	        	
+	        	for(int i = z; i < Math.abs(z) + 1; i++){
+	        		for(int j = z; j < Math.abs(z) + 1; j++){
 	        			if(i != 0 || j != 0){
-					        if(countMineNeighborhood(row + i, col + j) == 0){
+	        				
+	        				int rowTemp = row + i;
+	        				int colTemp = col + j;
+	        				
+					        if(countMineNeighborhood(rowTemp, colTemp) == 0){
 					        	try{
-						        	button_game_panel = (Button) getButtonByRowColumnIndex(row + i, col + j, grid_game_panel);
+						        	button_game_panel = (Button) getButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel);
 							        if(!button_game_panel.isDisable()){
 							        	button_game_panel.setDisable(true);
-								        System.out.println("Test");
 								        num_click_left++;
 								        System.out.println(num_click_left);
 							        }
 					        	}catch(Exception e){
 						        }
 					        }
+//					        else if((countMineNeighborhood(rowTemp, colTemp) != 0)){
+//					        	button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
+//					        	button_game_panel.setDisable(true);
+//					        	num_click_left++;
+//					        	rowList.add(rowTemp);
+//					        	colList.add(colTemp);
+//					        	System.out.println(rowList);
+//					        	System.out.println(colList);
+//					        }
 	        			}
 	        		}
 	        	}
+	        	
+//	        	int row_temp = -1;
+//	        	int col_temp = -1;
+//	        	
+//	        	while(checkButtonByRowColumnIndex(row + row_temp, col + col_temp, grid_game_panel)){
+//		        	for(int i = -1; i < 2; i++){
+//		        		for(int j = -1; j < 2; j++){
+//		        			if(i != 0 || j != 0){
+//						        if(countMineNeighborhood(row + i, col + j) == 0){
+//						        	try{
+//							        	button_game_panel = (Button) getButtonByRowColumnIndex(row + i, col + j, grid_game_panel);
+//								        row_temp = row + i;
+//								        col_temp = col + j;
+//								        break;
+//								    }catch(Exception e){
+//							        }
+//						        }
+//		        			}
+//		        		}
+//		        	}
+//	        	}
 	        	
 		        // A A A
 		        // | | |		
@@ -286,7 +339,7 @@ public class GameController {
         			lb_mine_suspected.setText(String.valueOf(num_click_right));
         			System.out.println(num_click_right);
         	}
-        }
+        } 
     }
 
     @FXML
@@ -351,7 +404,7 @@ public class GameController {
 	    		tab_location_mine[i][1] = col_random_coordinate;
 	    	}
 	    	
-	    	// wypisuej wylosowan¹ lokalizacjê min w koncoli
+	    	// wypisuje wylosowan¹ lokalizacjê min w koncoli
 	    	for(int i = 0; i <= tab_location_mine.length - 1 ; i++){
 	    		for(int j = 0; j <= tab_location_mine[0].length - 1; j++){
 	    			System.out.print(tab_location_mine[i][j] + " ");
