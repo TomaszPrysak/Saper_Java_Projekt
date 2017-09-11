@@ -22,7 +22,11 @@ public class TestOverall {
 		
 		System.out.println(tymczasowy.get(1).length);
 		
+		int z = -1;
 		
+		z--;
+		
+		System.out.println(z);
 		
 	}
 

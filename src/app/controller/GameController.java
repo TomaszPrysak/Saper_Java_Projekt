@@ -79,7 +79,7 @@ public class GameController {
 	
 	static int zero_zero = 0; // deklaracja i inicjalizacja zmiennej wykorzystywanej w celu mo¿liwoœci wyklosowania wspó³rzêdnych 0,0 jakiejœ miny
 	
-	static final String mine = "M";
+//	static final String mine = "M";
 	
 	static int qty_mine_neighborhood;
 	
@@ -156,11 +156,38 @@ public class GameController {
 		return qty_mine_neighborhood;
 	}
 	
+	public static int checkWhichQuarterNodeIs(int i, int j){
+		int num_quarter = 0;
+		if(i < 0 && j < 0){
+			num_quarter = 1;
+		}
+		if(i < 0 && j > 0){
+			num_quarter = 2;
+		}
+		if(i > 0 && j > 0){
+			num_quarter = 3;
+		}
+		if(i > 0 && j < 0){
+			num_quarter = 4;
+		}
+//		if(row > rowTemp && col == colTemp){
+//			num_quarter = 10;
+//		}
+//		if(row == rowTemp && col < colTemp){
+//			num_quarter = 20;
+//		}
+//		if(row < rowTemp && col == colTemp){
+//			num_quarter = 30;
+//		}
+//		if(row == rowTemp && col > colTemp){
+//			num_quarter = 40;
+//		}
+		return num_quarter;
+	}
+	
 	public static Node getButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // metoda do zwracania obiektu klasy Node z konkretnego po³o¿enia w grid panelu
 	    Node result = null;
-	    
 	    ObservableList<Node> childrens = grid_game_panel.getChildren();
-
 	    for (Node node : childrens) {
 	        if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
 	            result = node;
@@ -172,9 +199,7 @@ public class GameController {
 	
 	public static boolean checkButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // 
 	    boolean result = false;
-	    
 	    ObservableList<Node> childrens = grid_game_panel.getChildren();
-
 	    for (Node node : childrens) {
 	        if(GridPane.getRowIndex(node) == row && GridPane.getColumnIndex(node) == column) {
 	            result = true;
@@ -203,9 +228,9 @@ public class GameController {
 //	    System.out.println("Kolumna: "+ col);
         
         if(button_mouse == MouseButton.PRIMARY){ // naciœniêcie lewego przycisku myszy
-	        if(checkMineUnderneathButton(row, col) == true){
+	        if(checkMineUnderneathButton(row, col)){
 	        	
-	        	button_game_panel.setText(mine);
+//	        	button_game_panel.setText(mine);
 	        	button_game_panel.setDisable(true);
 //	        	System.out.println("MINA");
 	        	
@@ -251,27 +276,103 @@ public class GameController {
 	        	
 	        	int z = -1;
 	        	
-	        	ArrayList<Integer> rowList = new ArrayList<Integer>();
-	        	ArrayList<Integer> colList = new ArrayList<Integer>();
+	        	ArrayList<Integer> rowListQ1 = new ArrayList<Integer>();
+	        	ArrayList<Integer> colListQ1 = new ArrayList<Integer>();
+
+	        	ArrayList<Integer> rowListQ2 = new ArrayList<Integer>();
+	        	ArrayList<Integer> colListQ2 = new ArrayList<Integer>();
+	        	
+	        	ArrayList<Integer> rowListQ3 = new ArrayList<Integer>();
+	        	ArrayList<Integer> colListQ3 = new ArrayList<Integer>();
+	        	
+	        	ArrayList<Integer> rowListQ4 = new ArrayList<Integer>();
+	        	ArrayList<Integer> colListQ4 = new ArrayList<Integer>();
 	        	
 	        	for(int i = z; i < Math.abs(z) + 1; i++){
 	        		for(int j = z; j < Math.abs(z) + 1; j++){
-	        			if(i != 0 || j != 0){
-	        				
-	        				int rowTemp = row + i;
-	        				int colTemp = col + j;
-	        				
-					        if(countMineNeighborhood(rowTemp, colTemp) == 0){
-					        	try{
-						        	button_game_panel = (Button) getButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel);
-							        if(!button_game_panel.isDisable()){
-							        	button_game_panel.setDisable(true);
-								        num_click_left++;
-								        System.out.println(num_click_left);
-							        }
-					        	}catch(Exception e){
-						        }
-					        }
+	        			int rowTemp = row + i;
+        				int colTemp = col + j;
+        				if(checkButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel)){
+		        			if(i != 0 || j != 0){
+//		        				if(!rowList.contains(rowTemp)){
+		        					button_game_panel = (Button) getButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel);
+			        				if(countMineNeighborhood(rowTemp, colTemp) == 0){
+								        if(!button_game_panel.isDisable()){
+									        button_game_panel.setDisable(true);
+										    num_click_left++;
+										    System.out.println(num_click_left);
+									    }
+							        }else if((countMineNeighborhood(rowTemp, colTemp) != 0)){
+							        	if(!button_game_panel.isDisable()){
+									        button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
+									        button_game_panel.setDisable(true);
+									        System.out.print(i + " " + j);
+									        num_click_left++;
+									        if(checkWhichQuarterNodeIs(i, j) == 1){
+									        	if(!rowListQ1.contains(rowTemp)){
+									        		rowListQ1.add(rowTemp);
+									        	}
+									        	if(!colListQ1.contains(colTemp)){
+									        		colListQ1.add(colTemp);
+									        	}
+									        }
+									        if(checkWhichQuarterNodeIs(i, j) == 2){
+									        	if(!rowListQ2.contains(rowTemp)){
+									        		rowListQ2.add(rowTemp);
+									        	}
+									        	if(!colListQ2.contains(colTemp)){
+									        		colListQ2.add(colTemp);
+									        	}
+									        }
+									        if(checkWhichQuarterNodeIs(i, j) == 3){
+									        	if(!rowListQ3.contains(rowTemp)){
+									        		rowListQ3.add(rowTemp);
+									        	}
+									        	if(!colListQ3.contains(colTemp)){
+									        		colListQ3.add(colTemp);
+									        	}
+									        }
+									        if(checkWhichQuarterNodeIs(i, j) == 4){
+									        	if(!rowListQ4.contains(rowTemp)){
+									        		rowListQ4.add(rowTemp);
+									        	}
+									        	if(!colListQ4.contains(colTemp)){
+									        		colListQ4.add(colTemp);
+									        	}
+									        }
+							        	}
+								    }
+			        			z--;
+//			        			}
+		        			}
+        				}
+	        		}
+	        	}
+	        	
+	    	
+	        	
+	        	// Archiwum
+	        	// | | |
+	        	// V V V
+	        	
+//	        	for(int i = z; i < Math.abs(z) + 1; i++){
+//	        		for(int j = z; j < Math.abs(z) + 1; j++){
+//	        			if(i != 0 || j != 0){
+//	        				
+//	        				int rowTemp = row + i;
+//	        				int colTemp = col + j;
+//	        				
+//					        if(countMineNeighborhood(rowTemp, colTemp) == 0){
+//					        	try{
+//						        	button_game_panel = (Button) getButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel);
+//							        if(!button_game_panel.isDisable()){
+//							        	button_game_panel.setDisable(true);
+//								        num_click_left++;
+//								        System.out.println(num_click_left);
+//							        }
+//					        	}catch(Exception e){
+//						        }
+//					        }
 //					        else if((countMineNeighborhood(rowTemp, colTemp) != 0)){
 //					        	button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
 //					        	button_game_panel.setDisable(true);
@@ -281,10 +382,10 @@ public class GameController {
 //					        	System.out.println(rowList);
 //					        	System.out.println(colList);
 //					        }
-	        			}
-	        		}
-	        	}
-	        	
+//	        			}
+//	        		}
+//	        	}
+//	        	
 //	        	int row_temp = -1;
 //	        	int col_temp = -1;
 //	        	
@@ -305,6 +406,10 @@ public class GameController {
 //		        		}
 //		        	}
 //	        	}
+	        	
+	        	// A A A
+		        // | | |		
+	        	// Archiwum
 	        	
 		        // A A A
 		        // | | |		
@@ -404,7 +509,7 @@ public class GameController {
 	    		tab_location_mine[i][1] = col_random_coordinate;
 	    	}
 	    	
-	    	// wypisuje wylosowan¹ lokalizacjê min w koncoli
+	    	// wypisuje wylosowan¹ lokalizacjê min w konsoli
 	    	for(int i = 0; i <= tab_location_mine.length - 1 ; i++){
 	    		for(int j = 0; j <= tab_location_mine[0].length - 1; j++){
 	    			System.out.print(tab_location_mine[i][j] + " ");
