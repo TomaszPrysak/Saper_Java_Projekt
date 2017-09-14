@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.Random;
 import app.database.DBConnector;
 import javafx.collections.ObservableList;
@@ -74,6 +73,8 @@ public class GameController {
     int num_click_left = 0;
     
     int num_click_right = 0;
+    
+    int nodeAroundTest;
     
 	static int [][] tab_location_mine = new int[10][2]; // deklaracja tablicy przechowuj¹cej wspó³rzêdne losowe (x,y) min
 	
@@ -156,34 +157,41 @@ public class GameController {
 		return qty_mine_neighborhood;
 	}
 	
-	public static int checkWhichQuarterNodeIs(int i, int j){
-		int num_quarter = 0;
-		if(i < 0 && j < 0){
-			num_quarter = 1;
-		}
-		if(i < 0 && j > 0){
-			num_quarter = 2;
-		}
-		if(i > 0 && j > 0){
-			num_quarter = 3;
-		}
-		if(i > 0 && j < 0){
-			num_quarter = 4;
-		}
-//		if(row > rowTemp && col == colTemp){
+//	public static int checkWhichQuarterNodeIs(int i, int j){
+//		int num_quarter = 0;
+//		
+//		if(i == 0 && j == 0){
+//			num_quarter = 0;
+//		}
+//		
+//		if(i < 0 && j < 0){
+//			num_quarter = 1;
+//		}
+//		if(i < 0 && j > 0){
+//			num_quarter = 2;
+//		}
+//		if(i > 0 && j > 0){
+//			num_quarter = 3;
+//		}
+//		if(i > 0 && j < 0){
+//			num_quarter = 4;
+//		}
+//		
+//		if(i == 0  && j < 0){
 //			num_quarter = 10;
 //		}
-//		if(row == rowTemp && col < colTemp){
+//		if(i == 0 && j > 0){
 //			num_quarter = 20;
 //		}
-//		if(row < rowTemp && col == colTemp){
+//		if(i < 0 && j == 0){
 //			num_quarter = 30;
 //		}
-//		if(row == rowTemp && col > colTemp){
+//		if(i > 0 && j == 0){
 //			num_quarter = 40;
 //		}
-		return num_quarter;
-	}
+//		
+//		return num_quarter;
+//	}
 	
 	public static Node getButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // metoda do zwracania obiektu klasy Node z konkretnego po³o¿enia w grid panelu
 	    Node result = null;
@@ -207,6 +215,34 @@ public class GameController {
 	        }
 	    }
 	    return result;
+	}
+	
+	public void nodeAroundTEST(int row, int col){
+		for(int i = -1; i < 2; i++){
+    		for(int j = -1; j < 2; j++){
+    			if(checkButtonByRowColumnIndex(row + i, col + j, grid_game_panel)){
+        			if(i != 0 || j != 0){
+        				if(checkButtonByRowColumnIndex(row + i, col + j, grid_game_panel)){
+        					button_game_panel = (Button) getButtonByRowColumnIndex(row + i, col + j, grid_game_panel);
+	        				if(countMineNeighborhood(row + i, col + j) == 0){
+						        if(!button_game_panel.isDisable()){
+							        button_game_panel.setDisable(true);
+								    num_click_left++;
+								    System.out.println(num_click_left);
+						        }
+	        				}else if((countMineNeighborhood(row + i, col + j) != 0)){
+					        	if(!button_game_panel.isDisable()){
+							        button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
+							        button_game_panel.setDisable(true);
+							        num_click_left++;
+							        System.out.println(num_click_left);
+					        	}
+	        				}
+        				}
+        			}
+    			}
+    		}
+		}
 	}
 	
 	/////////////////////
@@ -275,18 +311,7 @@ public class GameController {
 	        	// V V V
 	        	
 	        	int z = -1;
-	        	
-	        	ArrayList<Integer> rowListQ1 = new ArrayList<Integer>();
-	        	ArrayList<Integer> colListQ1 = new ArrayList<Integer>();
-
-	        	ArrayList<Integer> rowListQ2 = new ArrayList<Integer>();
-	        	ArrayList<Integer> colListQ2 = new ArrayList<Integer>();
-	        	
-	        	ArrayList<Integer> rowListQ3 = new ArrayList<Integer>();
-	        	ArrayList<Integer> colListQ3 = new ArrayList<Integer>();
-	        	
-	        	ArrayList<Integer> rowListQ4 = new ArrayList<Integer>();
-	        	ArrayList<Integer> colListQ4 = new ArrayList<Integer>();
+	        	nodeAroundTest = 0;
 	        	
 	        	for(int i = z; i < Math.abs(z) + 1; i++){
 	        		for(int j = z; j < Math.abs(z) + 1; j++){
@@ -294,67 +319,130 @@ public class GameController {
         				int colTemp = col + j;
         				if(checkButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel)){
 		        			if(i != 0 || j != 0){
-//		        				if(!rowList.contains(rowTemp)){
+		        				if(checkButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel)){
 		        					button_game_panel = (Button) getButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel);
 			        				if(countMineNeighborhood(rowTemp, colTemp) == 0){
 								        if(!button_game_panel.isDisable()){
 									        button_game_panel.setDisable(true);
 										    num_click_left++;
 										    System.out.println(num_click_left);
-									    }
-							        }else if((countMineNeighborhood(rowTemp, colTemp) != 0)){
+										    nodeAroundTEST(rowTemp, colTemp);
+										    nodeAroundTest++;
+								        }
+			        				}else if((countMineNeighborhood(rowTemp, colTemp) != 0)){
 							        	if(!button_game_panel.isDisable()){
 									        button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
 									        button_game_panel.setDisable(true);
-									        System.out.print(i + " " + j);
 									        num_click_left++;
-									        if(checkWhichQuarterNodeIs(i, j) == 1){
-									        	if(!rowListQ1.contains(rowTemp)){
-									        		rowListQ1.add(rowTemp);
-									        	}
-									        	if(!colListQ1.contains(colTemp)){
-									        		colListQ1.add(colTemp);
-									        	}
-									        }
-									        if(checkWhichQuarterNodeIs(i, j) == 2){
-									        	if(!rowListQ2.contains(rowTemp)){
-									        		rowListQ2.add(rowTemp);
-									        	}
-									        	if(!colListQ2.contains(colTemp)){
-									        		colListQ2.add(colTemp);
-									        	}
-									        }
-									        if(checkWhichQuarterNodeIs(i, j) == 3){
-									        	if(!rowListQ3.contains(rowTemp)){
-									        		rowListQ3.add(rowTemp);
-									        	}
-									        	if(!colListQ3.contains(colTemp)){
-									        		colListQ3.add(colTemp);
-									        	}
-									        }
-									        if(checkWhichQuarterNodeIs(i, j) == 4){
-									        	if(!rowListQ4.contains(rowTemp)){
-									        		rowListQ4.add(rowTemp);
-									        	}
-									        	if(!colListQ4.contains(colTemp)){
-									        		colListQ4.add(colTemp);
-									        	}
-									        }
+									        System.out.println(num_click_left);
+									        nodeAroundTest++;
 							        	}
-								    }
-			        			z--;
-//			        			}
+			        				}	
+		        				}
+//		        				if(nodeAroundTest == 0){
+//		    	        			break;
+//		    	        		}
+//		    	        		z--;
 		        			}
         				}
 	        		}
 	        	}
-	        	
-	    	
-	        	
+	           	
 	        	// Archiwum
 	        	// | | |
 	        	// V V V
-	        	
+		        				
+//		       	ArrayList<Integer> rowListQ1 = new ArrayList<Integer>();
+//		        ArrayList<Integer> colListQ1 = new ArrayList<Integer>();
+//
+//		       	ArrayList<Integer> rowListQ2 = new ArrayList<Integer>();
+//		        ArrayList<Integer> colListQ2 = new ArrayList<Integer>();
+//		        	        	
+//		        ArrayList<Integer> rowListQ3 = new ArrayList<Integer>();
+//		       	ArrayList<Integer> colListQ3 = new ArrayList<Integer>();
+//		        	        	
+//		        ArrayList<Integer> rowListQ4 = new ArrayList<Integer>();
+//		        ArrayList<Integer> colListQ4 = new ArrayList<Integer>();
+//		        	        	
+//	        	for(int i = z; i < Math.abs(z) + 1; i++){
+//	        		for(int j = z; j < Math.abs(z) + 1; j++){
+//	        			int rowTemp = row + i;
+//	        			int colTemp = col + j;
+//	        			if(checkButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel)){
+//	        				if(i != 0 || j != 0){
+//	        					if((i < 0 && j == z && !rowListQ1.contains(rowTemp))){
+//	        						button_game_panel = (Button) getButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel);
+//	        						if(countMineNeighborhood(rowTemp, colTemp) == 0){
+//	        							if(!button_game_panel.isDisable()){
+//	        								button_game_panel.setDisable(true);
+//	        								num_click_left++;
+//	        								System.out.println(num_click_left);
+//	        							}
+//	        						}else if((countMineNeighborhood(rowTemp, colTemp) != 0)){
+//	        							if(!button_game_panel.isDisable()){
+//	        								button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
+//	        								button_game_panel.setDisable(true);
+//	        								System.out.println(i + " " + j);
+//	        								num_click_left++;
+//	        								System.out.println(num_click_left);
+//	        							}
+//	        						}	
+//	        					}
+//	        				}
+//	        				button_game_panel = (Button) getButtonByRowColumnIndex(rowTemp, colTemp, grid_game_panel);
+//	        				if(countMineNeighborhood(rowTemp, colTemp) == 0){
+//	        					if(!button_game_panel.isDisable()){
+//	        						button_game_panel.setDisable(true);
+//	        						num_click_left++;
+//	        						System.out.println(num_click_left);
+//	        					}
+//	        				}else if((countMineNeighborhood(rowTemp, colTemp) != 0)){
+//	        					if(!button_game_panel.isDisable()){
+//	        						button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
+//	        						button_game_panel.setDisable(true);
+//	        						System.out.println(i + " " + j);
+//	        						num_click_left++;
+//	        						System.out.println(num_click_left);
+//	        						if(checkWhichQuarterNodeIs(i, j) == 1){
+//	        							if(!rowListQ1.contains(rowTemp)){
+//	        								rowListQ1.add(rowTemp);
+//	        							}
+//	        							if(!colListQ1.contains(colTemp)){
+//	        								colListQ1.add(colTemp);
+//	        							}
+//	        						}
+//	        						if(checkWhichQuarterNodeIs(i, j) == 2){
+//	        							if(!rowListQ2.contains(rowTemp)){
+//	        								rowListQ2.add(rowTemp);
+//	        							}
+//	        							if(!colListQ2.contains(colTemp)){
+//	        								colListQ2.add(colTemp);
+//	        							}
+//	        						}
+//	        						if(checkWhichQuarterNodeIs(i, j) == 3){
+//	        							if(!rowListQ3.contains(rowTemp)){
+//	        								rowListQ3.add(rowTemp);
+//	        							}
+//	        							if(!colListQ3.contains(colTemp)){
+//	        								colListQ3.add(colTemp);
+//	        							}
+//	        						}
+//	        						if(checkWhichQuarterNodeIs(i, j) == 4){
+//	        							if(!rowListQ4.contains(rowTemp)){
+//	        								rowListQ4.add(rowTemp);
+//	        							}
+//	        							if(!colListQ4.contains(colTemp)){
+//	        								colListQ4.add(colTemp);
+//	        							}
+//	        						}
+//	        					}
+//	        				}
+//	        				z--;
+//	        			}
+//	        		}
+//	        	}
+//	        }				
+//	        	----------------------
 //	        	for(int i = z; i < Math.abs(z) + 1; i++){
 //	        		for(int j = z; j < Math.abs(z) + 1; j++){
 //	        			if(i != 0 || j != 0){
@@ -385,7 +473,7 @@ public class GameController {
 //	        			}
 //	        		}
 //	        	}
-//	        	
+//	        	-------------
 //	        	int row_temp = -1;
 //	        	int col_temp = -1;
 //	        	
@@ -407,11 +495,11 @@ public class GameController {
 //		        	}
 //	        	}
 	        	
-	        	// A A A
+	        	// ^ ^ ^
 		        // | | |		
 	        	// Archiwum
 	        	
-		        // A A A
+		        // ^ ^ ^
 		        // | | |		
 	        	// tutaj jest sekcja odpowiedzialna za odkrywanie pól pustych
 
