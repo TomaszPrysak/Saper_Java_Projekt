@@ -109,9 +109,9 @@ public class SuccessController {
     		double time_temp = rs1.getDouble(3);
     		if(time > time_temp){
     			Alert a = new Alert(AlertType.INFORMATION);
-        		a.setContentText("Niestety nie uda³o Ci siê poprawiæ swojego dotychczasowego czasu: "+ time_temp + ", w kategori " + GameController.qty_mine_overall_user_chooice + " min");
+        		a.setContentText("Osiogn¹³eœ czas: " + time + "\nJest to gorzej ni¿ Twój dotychczasowy najlepszy czas: "+ time_temp + ", w kategori " + GameController.qty_mine_overall_user_chooice + " min");
         		a.setTitle("Informacja");
-        		a.setHeaderText("PRZYKRO");
+        		a.setHeaderText("PRZYKRO NAM");
         		a.showAndWait();
     		}else{
     			Alert a = new Alert(AlertType.INFORMATION);

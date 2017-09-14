@@ -98,7 +98,7 @@ public class GameController {
 	// metody //
     ////////////
     
-	public static boolean checkCoordiantesUnique(int row, int col){ // metoda do sprawdzania czy wylosowane tymczaswoe zminne oznaczaj¹ce wspó³órzêdne kolejnej miny znajduj¹ siê ju¿ w tablicy wspó³rzêdnych min
+	public boolean checkCoordiantesUnique(int row, int col){ // metoda do sprawdzania czy wylosowane tymczaswoe zminne oznaczaj¹ce wspó³órzêdne kolejnej miny znajduj¹ siê ju¿ w tablicy wspó³rzêdnych min
 		boolean check = false;
 		for(int i = 0; i <= tab_location_mine.length - 1 ; i++){
     		if(tab_location_mine[i][0] == row && tab_location_mine[i][1] == col && zero_zero != 1){ // UWAGA zmienna zero_zero jest bardzo wazna. Poniewa¿ na pocz¹tku programu deklarujê tablicê [10][2] to na wstêpie sk³ada siê ona z samych zer. Nastêpnie losujê wspó³rzêdne, jezeli wylosujê 0,0 to jest to po³o¿enie sprawdzane czy jest ju¿ w tablicy. Normalnie skoro tablica na pocz¹tku sk³ada siê z samy zer. To w koñu metoda znajdzie same zera i uzna, ¿e jest to duplikat. Dlatego w przypadku samych zer pierwsze porównanie nie mo¿e byæ uznane za duplikat. I do tego jest potrzebna ta zmienna pomocnicza zero_zero, aby zliczyæ iloœæ porównañ z tablic¹. Tylko wartoœæ = 1 tej zmiennej powoduje, ¿e porównanie nie zwraca duplikatu
@@ -113,7 +113,7 @@ public class GameController {
 		return check;
 	}
 	
-	public static boolean checkMineUnderneathButton(int row, int col){ // metoda do sprawdzania czy wspó³rzêdne klawisza pokrywaj¹ siê ze wspó³rzêdnymi miny
+	public boolean checkMineUnderneathButton(int row, int col){ // metoda do sprawdzania czy wspó³rzêdne klawisza pokrywaj¹ siê ze wspó³rzêdnymi miny
 		boolean check = false;
     	for(int i = 0; i <= tab_location_mine.length - 1; i++){
     		if(tab_location_mine[i][0] == row && tab_location_mine[i][1] == col){
@@ -126,7 +126,7 @@ public class GameController {
 		return check;
 	}
 	
-	public static int countMineNeighborhood(int row, int col){ // metoda do sprawdzania czy w otoczeniu wciœniêtego klawisza jest mina i inkrementowanie zmiennej je¿eli ona wystêpuje
+	public int countMineNeighborhood(int row, int col){ // metoda do sprawdzania czy w otoczeniu wciœniêtego klawisza jest mina i inkrementowanie zmiennej je¿eli ona wystêpuje
 		qty_mine_neighborhood = 0;
 		for(int i = 0; i<= tab_location_mine.length - 1; i++){
 			if(tab_location_mine[i][0] == (row - 1) && tab_location_mine[i][1] == (col - 1)){
@@ -193,7 +193,7 @@ public class GameController {
 //		return num_quarter;
 //	}
 	
-	public static Node getButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // metoda do zwracania obiektu klasy Node z konkretnego po³o¿enia w grid panelu
+	public Node getButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // metoda do zwracania obiektu klasy Node z konkretnego po³o¿enia w grid panelu
 	    Node result = null;
 	    ObservableList<Node> childrens = grid_game_panel.getChildren();
 	    for (Node node : childrens) {
@@ -205,7 +205,7 @@ public class GameController {
 	    return result;
 	}
 	
-	public static boolean checkButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // 
+	public boolean checkButtonByRowColumnIndex(int row, int column, GridPane grid_game_panel){ // 
 	    boolean result = false;
 	    ObservableList<Node> childrens = grid_game_panel.getChildren();
 	    for (Node node : childrens) {
@@ -224,25 +224,28 @@ public class GameController {
         			if(i != 0 || j != 0){
         				if(checkButtonByRowColumnIndex(row + i, col + j, grid_game_panel)){
         					button_game_panel = (Button) getButtonByRowColumnIndex(row + i, col + j, grid_game_panel);
-	        				if(countMineNeighborhood(row + i, col + j) == 0){
-						        if(!button_game_panel.isDisable()){
+        					if(!button_game_panel.isDisable()){
+        						if(countMineNeighborhood(row + i, col + j) == 0){
+//						        if(!button_game_panel.isDisable()){
 							        button_game_panel.setDisable(true);
 								    num_click_left++;
 								    System.out.println(num_click_left);
+//								    nodeAroundTest++;
 						        }
-	        				}else if((countMineNeighborhood(row + i, col + j) != 0)){
-					        	if(!button_game_panel.isDisable()){
-							        button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
-							        button_game_panel.setDisable(true);
-							        num_click_left++;
-							        System.out.println(num_click_left);
-					        	}
-	        				}
-        				}
+		        				else if((countMineNeighborhood(row + i, col + j) != 0)){
+//					        		if(!button_game_panel.isDisable()){
+								        button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
+								        button_game_panel.setDisable(true);
+								        num_click_left++;
+								        System.out.println(num_click_left);
+//							        	nodeAroundTest++;
+						        }
+        					}
+	        			}
         			}
-    			}
+        		}
     		}
-		}
+    	}
 	}
 	
 	/////////////////////
@@ -326,16 +329,16 @@ public class GameController {
 									        button_game_panel.setDisable(true);
 										    num_click_left++;
 										    System.out.println(num_click_left);
-										    nodeAroundTEST(rowTemp, colTemp);
-										    nodeAroundTest++;
+//										    nodeAroundTest++;
 								        }
+								        nodeAroundTEST(rowTemp, colTemp);
 			        				}else if((countMineNeighborhood(rowTemp, colTemp) != 0)){
 							        	if(!button_game_panel.isDisable()){
 									        button_game_panel.setText(String.valueOf(qty_mine_neighborhood));
 									        button_game_panel.setDisable(true);
 									        num_click_left++;
 									        System.out.println(num_click_left);
-									        nodeAroundTest++;
+//									        nodeAroundTest++;
 							        	}
 			        				}	
 		        				}
