@@ -120,7 +120,7 @@ public class SuccessController {
         		a.setHeaderText("BRAWO!");
         		a.showAndWait();
         		
-        		String sql = "update results set stopwatch = " + time + " where user_name = '" + GameController.user_name + "' and and qty_mine = " + GameController.qty_mine_overall_user_chooice + ";";
+        		String sql = "update results set stopwatch = " + time + " where user_name = '" + GameController.user_name + "' and qty_mine = " + GameController.qty_mine_overall_user_chooice + ";";
             	PreparedStatement ps = conn.prepareStatement(sql);
             	ps.executeUpdate();
     		}
